@@ -13,17 +13,6 @@ class Dot:
 
     def __repr__(self):    # Вывод точек в консоль для проверки
         return f"({self.x}, {self.y})"
-# print()
-# print('ВСТАВКА РАЗБОРА CLASS DOT')
-# print('--------------------------------------------------------------------------------------------')
-# a = Dot(1, 1)
-# b = Dot(1, 0)
-# c = Dot(1, 1)
-# print(a.x == c.x) and (a.y == c.y)
-# print(a == c)         # За счет метода _eq_ позволяет сравнивать точки между собой как пример выше
-# ab = [Dot(1, 3), Dot(3, 0), Dot(2, 1), Dot(0, 0)]
-# print(a in ab)        # проверяет есть ли координаты точки a в списке ab
-# print(ab.count(a))    # количество совпадающих точек в списке ab
 
 
 # ОБЩИЙ КЛАСС ИСКЛЮЧЕНИЙ BoardException
@@ -69,26 +58,18 @@ class Ship:
 
     def shooten(self, shot):     # Выстрелы по координатам корабля
          return shot in self.dots    # есть ли shot в координатах s
-# print()
-# print('ВСТАВКА РАЗБОРА CLASS SHIP')
-# print('--------------------------------------------------------------------------------------------')
-# s = Ship(Dot(1, 1), 4, 1)  # где Dot(1, 2) - точка носа; 4 - длина кор., 0 - ориентация кор.
-# # print(s.dots())    # Проверка координат корабля нужно раскомментировать и убрать @property из def dots
-# print(s.shooten(Dot(1, 3)))   # Проверили - есть такая точка(попадание)
 
 
 # ОБЩИЙ КЛАСС ИГРОВОЕ ПОЛЕ
 class Board:
-    def __init__(self, hid=False, size=6):
+    def __init__(self, hid=True, size=6):
         # hid - где скрыто поле или нет; size - размер поля по вертикали и горизонтали
         self.size = size
         self.hid = hid
 
         self.count = 0    # количество пораженных кораблей
 
-        self.field = [[' '] * 6 for i in range(6)]
-        # self.field = [["~"] * size for _ in range(size)]   # Сетка которая, содержит в каждой клетке значение "~",
-        # # показывающее, что поле в этом месте не занято вообще или не занято кораблем и не делали выстрел
+        self.field = [['~'] * 6 for i in range(6)]
 
         self.busy = []   # точки занятые кораблем или точки куда стреляли
         self.ships = []    # список кораблей доски
@@ -101,7 +82,7 @@ class Board:
             if self.out(d) or d in self.busy:   # проверяем не уходит ли точка за границы или на занятость
                 raise BoardWrongShipException()   # если да, то вызываем исключение
         for d in ship.dots:
-            self.field[d.x][d.y] = "■"   # Проходимся по точкам корабля и ставим в них ■
+            self.field[d.x][d.y] = "O"   # Проходимся по точкам корабля и ставим в них O
             self.busy.append(d)
 
         self.ships.append(ship)    # Список собственных кораблей
@@ -135,10 +116,10 @@ class Board:
             print(res)
             print('-- --- --- --- --- --- ---')
 
+        if self.hid:
+            res2 = res.replace("O", "■")
+        return ''
 
-        if self.hid:    # если hid True, то вместо квадратиков и кораблей будит "~"
-            res = res.replace("■", "O")
-        return res
     def out(self, d):
         return not((0 <= d.x < self.size) and (0 <= d.y < self.size))
 
@@ -159,7 +140,7 @@ class Board:
                 self.field[d.x][d.y] = "X"
                 if ship.lives == 0:
                     self.count += 1    # Прибавляем количество пораженных кораблей
-                    self.contour(ship, verb=False)    # Обводим контур кораблей
+                    self.contour(ship, verb=True)    # Обводим контур кораблей
                     print("Корабль уничтожен!")
                     return False
                 else:
@@ -295,6 +276,7 @@ class Game:
             else:
                 print("-" * 27)
                 print("Ходит компьютер!")
+
                 repeat = self.ai.move()
             if repeat:
                 num -= 1    # Дает возможность сделать еще раз ход
@@ -316,15 +298,6 @@ class Game:
         self.loop()
 g = Game()
 g.start()
-# g.size = 6
-# print(g.random_board())
-# print()
-# print('ВСТАВКА РАЗБОРА CLASS BOARD И ФУНКЦИИ _STR_')
-# print('--------------------------------------------------------------------------------------------')
-# b = Board()
-# # Расставляем корабли на доску
-# b.add_ship(Ship(Dot(1, 2), 4, 0))
-# b.add_ship(Ship(Dot(0, 0), 1, 0))
-# print(b)
+
 
 
