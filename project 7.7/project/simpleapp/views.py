@@ -1,12 +1,13 @@
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy   # импортируем для удаления новостей
+from django.urls import reverse_lazy  # импортируем для удаления новостей
 from .models import Product, NewsPortal
 from datetime import datetime
 from .filters import ProductFilter, NewsFilter
 from .forms import ProductForm, NewForm  # для создания продуктов через функцию forms.py
-from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 class ProductsList(ListView):
@@ -190,8 +191,12 @@ class NewCreate(CreateView):
         new.save()
         return super().form_valid(form)
 
+# Авторизация пользователя для изменения данных и их обновление с помощью LoginRequiredMixin. Так же
+# прописываем settings.py переменная LOGIN_URL с возвратом на страницу после успешной авторизации. Импортируем так
+# же from django.contrib.auth.mixins import LoginRequiredMixin
+
 # Добавляем обновление новости и статьи.
-class NewUpdate(UpdateView):
+class NewUpdate(LoginRequiredMixin, UpdateView):
     # Указываем нашу разработанную форму
     form_class = NewForm
     # модель товаров
@@ -212,4 +217,4 @@ class NewUpdate(UpdateView):
 class NewDelete(DeleteView):
     model = NewsPortal
     template_name = 'flatpages/new_delete.html'
-    success_url = reverse_lazy('new_detail')
+    success_url = reverse_lazy('new_list')
