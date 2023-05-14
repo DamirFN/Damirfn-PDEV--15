@@ -1,0 +1,22 @@
+<!-- Подключение allauth - модуль регистрации, логирования и логаут -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block head_title %}{% endblock head_title %}</title>
+    </head>
+    <body>
+        {% block body %}
+        {% block content %}
+        {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+
+    </body>
+    <body>
+    {% if is_not_author %}
+            <button> <a href="/accounts/login/"> Хочу стать автором!</a> </button>
+    {% endif %}
+    </body>
+</html>
