@@ -8,6 +8,9 @@ from .filters import ProductFilter, NewsFilter
 from .forms import ProductForm, NewForm  # для создания продуктов через функцию forms.py
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from allauth.account.forms import SignupForm  # форму регистрации SignupForm из коробки allauth
+from django.contrib.auth.models import Group  # импорт созданных групп
+
 
 class ProductsList(ListView):
     # Указываем модель, объекты которой мы будем выводить
@@ -149,7 +152,7 @@ class NewsList(ListView):
 
 
 # NewsDetail, которое будет выдавать информацию об одной новости
-class NewsDetail(DetailView):
+class NewsDetail(LoginRequiredMixin, DetailView):
     # Модель всё та же, но мы хотим получать информацию по отдельной новости
     model = NewsPortal
     ordering = '-sort_date_of_publication'
@@ -217,3 +220,11 @@ class NewDelete(LoginRequiredMixin, DeleteView):
     model = NewsPortal
     template_name = 'flatpages/new_delete.html'
     success_url = reverse_lazy('new_list')
+
+class Author(SignupForm):
+    def upgrade_me(self, request):
+        user = request.user
+        author_group = Group.objects.get(name='author')
+        if not request.user.groups.filter(name='author').exists():
+            author_group.user_set.add(user)
+            return user  # возвращение объекта модели User по итогу выполнения функции
