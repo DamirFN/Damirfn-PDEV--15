@@ -1,0 +1,13 @@
+admin: damir
+       12345d	
+
+bob@mail.ru
+12345bob
+top@mail.com
+12345top
+lop@mail.net
+12345lop
+dop@mail.de
+12345dop
+hop@mail.kz
+12345hop
