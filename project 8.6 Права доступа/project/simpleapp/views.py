@@ -8,7 +8,7 @@ from datetime import datetime
 from .filters import ProductFilter, NewsFilter
 from .forms import ProductForm, NewForm  # для создания продуктов через функцию forms.py
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group  # импорт созданных групп
 
 
@@ -176,7 +176,8 @@ class NewsDetail(LoginRequiredMixin, DetailView):
 
 
 # Добавляем новое представление для создания новости.
-class NewCreate(LoginRequiredMixin, CreateView):
+class NewCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('simpleapp.add_newsportal')
     # Указываем нашу разработанную форму
     form_class = NewForm
     # модель товаров
@@ -192,13 +193,18 @@ class NewCreate(LoginRequiredMixin, CreateView):
             new.news_category_id = 2
         new.save()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
 
 # Авторизация пользователя для изменения данных и их обновление с помощью LoginRequiredMixin. Так же
 # прописываем settings.py переменная LOGIN_URL с возвратом на страницу после успешной авторизации. Импортируем так
 # же from django.contrib.auth.mixins import LoginRequiredMixin
-
 # Добавляем обновление новости и статьи.
-class NewUpdate(LoginRequiredMixin, UpdateView):
+class NewUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('simpleapp.change_newsportal')
     # Указываем нашу разработанную форму
     form_class = NewForm
     # модель товаров
@@ -215,11 +221,23 @@ class NewUpdate(LoginRequiredMixin, UpdateView):
         new.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
+
 # Представление удаляющее товар.
-class NewDelete(LoginRequiredMixin, DeleteView):
+class NewDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('simpleapp.delete_newsportal')
+
     model = NewsPortal
     template_name = 'flatpages/new_delete.html'
     success_url = reverse_lazy('new_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_author'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
 
 def upgrade_me(request):
     user = request.user

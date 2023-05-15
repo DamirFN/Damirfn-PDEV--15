@@ -60,8 +60,3 @@ class CommonSignupForm(SignupForm):
 
 # Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо формы по умолчанию, необходимо добавить
 # строчку в файл настроек проекта settings.py
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['is_not_author'] = not self.request.user.groups.filter(name='author').exists()
-    #     return context
