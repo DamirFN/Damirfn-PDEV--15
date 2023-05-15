@@ -1,5 +1,6 @@
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
+from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy  # импортируем для удаления новостей
 from .models import Product, NewsPortal
@@ -8,7 +9,6 @@ from .filters import ProductFilter, NewsFilter
 from .forms import ProductForm, NewForm  # для создания продуктов через функцию forms.py
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from allauth.account.forms import SignupForm  # форму регистрации SignupForm из коробки allauth
 from django.contrib.auth.models import Group  # импорт созданных групп
 
 
@@ -221,10 +221,13 @@ class NewDelete(LoginRequiredMixin, DeleteView):
     template_name = 'flatpages/new_delete.html'
     success_url = reverse_lazy('new_list')
 
-class Author(SignupForm):
-    def upgrade_me(self, request):
-        user = request.user
-        author_group = Group.objects.get(name='author')
-        if not request.user.groups.filter(name='author').exists():
-            author_group.user_set.add(user)
-            return user  # возвращение объекта модели User по итогу выполнения функции
+def upgrade_me(request):
+    user = request.user
+    author_group = Group.objects.get(name='authors')
+    if not request.user.groups.filter(name='authors').exists():
+        author_group.user_set.add(user)
+    return redirect('/profile/')
+
+def profile(request):
+    context = {'is_not_author': not request.user.groups.filter(name='authors').exists()}
+    return render(request, 'flatpages/profile.html', context)

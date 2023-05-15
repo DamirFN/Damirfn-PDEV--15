@@ -156,6 +156,7 @@ STATIC_URL = 'static/'
 # для которого был вызван декоратор.
 
 LOGIN_URL = '/accounts/login/'   # для allauth
+LOGIN_REDIRECT_URL = '/profile/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

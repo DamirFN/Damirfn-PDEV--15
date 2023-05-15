@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 
+from django.contrib.auth.models import User
+
 
 # Товар для нашей витрины
 class Product(models.Model):
@@ -50,6 +52,7 @@ class NewsPortal(models.Model):
         return reverse('new_detail', args=[str(self.id)])    # для создания новости и статьи отдельно, с универсальным
         # путем во simpleapp\urls.py
         #return reverse('post/new_detail', args=[str(self.id)])
+
 
 
 class NewsCategory(models.Model):
