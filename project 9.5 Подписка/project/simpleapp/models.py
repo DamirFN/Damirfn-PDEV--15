@@ -44,7 +44,7 @@ class NewsPortal(models.Model):
     article_author = models.CharField(max_length=50)
     article_description = models.TextField()   # Текст статьи
 
-    news_category = models.ForeignKey(to='NewsCategory', on_delete=models.CASCADE, related_name='news')   # все
+    news_category = models.ManyToManyField('NewsCategory', related_name='news')   # все
     # новости в категории будут доступны через поле news
 
     def __str__(self):   # отображение описания товара на страничке в интернете
