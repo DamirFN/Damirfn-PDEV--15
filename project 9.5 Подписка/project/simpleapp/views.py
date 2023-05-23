@@ -4,105 +4,16 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy  # импортируем для удаления новостей
-from .models import Product, NewsPortal, NewsCategory
+from .models import NewsPortal, NewsCategory
 from datetime import datetime
-from .filters import ProductFilter, NewsFilter
-from .forms import ProductForm, NewForm  # для создания продуктов через функцию forms.py
+from .filters import NewsFilter
+from .forms import NewForm  # для создания продуктов через функцию forms.py
 from django.contrib.auth.mixins import LoginRequiredMixin        # авторизация пользователя
 from django.contrib.auth.mixins import PermissionRequiredMixin   # авторизация для автора
 from django.contrib.auth.models import Group  # импорт созданных групп
 from .models import Appointment    # рассылка сообщений
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
 from django.core.mail import mail_admins   # импортируем функцию для массовой отправки писем админам
-
-
-class ProductsList(ListView):
-    # Указываем модель, объекты которой мы будем выводить
-    model = Product
-    # Поле, которое будет использоваться для сортировки объектов
-    ordering = 'name'  # сортировка по расположению в порядке возрастания, или убывания '-name'
-
-    # queryset = Product.objects.filter(
-    #     price__lt=65990
-    # ).order_by('name')  # отсортировать по цене ниже чем 50000 и с помощью .order_by добавить другую
-    # # сортировку ordering = 'name'
-
-    # Указываем имя шаблона, в котором будут все инструкции о том,
-    # как именно пользователю должны быть показаны наши объекты
-    template_name = 'flatpages/products.html'
-    # Это имя списка, в котором будут лежать все объекты.
-    # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
-    context_object_name = 'products'
-    paginate_by = 2  # вот так мы можем указать количество записей на странице
-
-    # Переопределяем функцию получения списка товаров
-    def __init__(self):
-        self.filterset = None
-
-    def get_queryset(self):
-        # Получаем обычный запрос
-        queryset = super().get_queryset()
-        # Используем наш класс фильтрации.
-        # self.request.GET содержит объект QueryDict, который мы рассматривали
-        # в этом юнете ранее.
-        # Сохраняем нашу фильтрацию в объекте класса,
-        # чтобы потом добавить в контекст и использовать в шаблоне.
-
-        self.filterset = ProductFilter(self.request.GET, queryset)
-        # Возвращаем из функции отфильтрованный список товаров
-        return self.filterset.qs
-
-    def get_context_data(self, **kwargs):
-        # С помощью super() мы обращаемся к родительским классам
-        # и вызываем у них метод get_context_data с теми же аргументами,
-        # что и были переданы нам.
-        # В ответе мы должны получить словарь.
-        context = super().get_context_data(**kwargs)
-        # К словарю добавим текущую дату в ключ 'time_now'.
-        context['time_now'] = datetime.utcnow()
-        # Добавим ещё одну пустую переменную,
-        # чтобы на её примере рассмотреть работу ещё одного фильтра.
-        context['next_sale'] = 'Скоро ожидается снижение цен!'
-
-        # Добавляем в контекст объект фильтрации.
-        context['filterset'] = self.filterset
-        return context
-
-
-# ProductDetail, которое будет выдавать информацию об одном товаре
-class ProductDetail(DetailView):
-    # Модель всё та же, но мы хотим получать информацию по отдельному товару
-    model = Product
-    # Используем другой шаблон — product.html
-    template_name = 'flatpages/product.html'
-    # Название объекта, в котором будет выбранный пользователем продукт
-    context_object_name = 'product'
-
-    def get_context_data(self, **kwargs):
-        # С помощью super() мы обращаемся к родительским классам
-        # и вызываем у них метод get_context_data с теми же аргументами,
-        # что и были переданы нам.
-        # В ответе мы должны получить словарь.
-        context = super().get_context_data(**kwargs)
-        # К словарю добавим текущую дату в ключ 'time_now'.
-        context['time_now'] = datetime.utcnow()
-        # Добавим ещё одну пустую переменную,
-        # чтобы на её примере рассмотреть работу ещё одного фильтра.
-        context['next_sale'] = 'Скоро ожидается снижение цен!'
-        return context
-
-
-# Create your views here.
-
-# Добавляем новое представление для создания товаров.
-class ProductCreate(CreateView):
-    # Указываем нашу разработанную форму
-    form_class = ProductForm
-    # модель товаров
-    model = Product
-    # и новый шаблон, в котором используется форма.
-    template_name = 'flatpages/product_edit.html'
-
 
 # ______________________________________________________________________________________________________________
 
@@ -121,7 +32,7 @@ class NewsList(ListView):
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'news'
 
-    paginate_by = 10  # вот так мы можем указать количество записей на странице
+    paginate_by = 5  # вот так мы можем указать количество записей на странице
 
     def get_queryset(self):
         # Получаем обычный запрос
@@ -322,7 +233,7 @@ class CategoryListView(ListView):
 
     def get_queryset(self):
         self.news_category = get_object_or_404(NewsCategory, id=self.kwargs['pk'])
-        queryset = NewsPortal.objects.filter(news_category=self.news_category)
+        queryset = NewsPortal.objects.filter(news_category=self.news_category).order_by('-sort_date_of_publication')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -331,4 +242,3 @@ class CategoryListView(ListView):
         context['is_subscriber'] = self.request.user in self.news_category.subscribers.all()
         context['category'] = self.news_category
         return context
-
