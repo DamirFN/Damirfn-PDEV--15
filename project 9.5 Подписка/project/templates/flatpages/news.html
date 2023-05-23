@@ -53,10 +53,10 @@ NewsPortal
               <td>{{ new.article_author }}</td>
               <td>{{ new.article_description|truncatechars:20|censor }}</td>
 <!--              <td>{{ new.news_category.article_title }}</td>-->
-                <td>{% for category in new.news_category.all %}
-                    {{ category }}
-                    {% endfor %}
-                </td>
+                <td>  {% for category in new.news_category.all %}
+            {{ category }}
+            {% endfor %}
+              </td>
               <td>{{ new.sort_date_of_publication|date:'h m d M Y' }}</td>
 
             </tr> <!-- Не забываем закрыть HTML-тег строки -->

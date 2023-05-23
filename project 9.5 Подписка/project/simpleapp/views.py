@@ -321,12 +321,14 @@ class CategoryListView(ListView):
     context_object_name = 'category_news_list'
 
     def get_queryset(self):
-        self.category = get_object_or_404(NewsCategory, id=self.kwargs['pk'])
-        queryset = NewsPortal.objects.filter(news_category=self.category)
+        self.news_category = get_object_or_404(NewsCategory, id=self.kwargs['pk'])
+        queryset = NewsPortal.objects.filter(news_category=self.news_category)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
-        context['category'] = self.category
+        context['is_not_subscriber'] = self.request.user not in self.news_category.subscribers.all()
+        context['is_subscriber'] = self.request.user in self.news_category.subscribers.all()
+        context['category'] = self.news_category
         return context
+

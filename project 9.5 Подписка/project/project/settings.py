@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'django.contrib.flatpages',
     'fpages',
+
     'simpleapp',
     'django_filters',
 
@@ -51,18 +52,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.facebook',
-    # 'allauth.socialaccount.providers.gitlab',
-    # 'allauth.socialaccount.providers.instagram',
-    # 'allauth.socialaccount.providers.mailru',
-    # 'allauth.socialaccount.providers.telegram',
-    # 'allauth.socialaccount.providers.vk',
-    # 'allauth.socialaccount.providers.yandex'
-    # 'allauth.socialaccount.providers.zoom'
 ]
 
 # здесь указываем уже свою ПОЛНУЮ почту, с которой будут отправляться письма
-#DEFAULT_FROM_EMAIL = 'dreamstarsd@gmail.com'
+DEFAULT_FROM_EMAIL = 'damirfn12345@yandex.ru'
 
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Google-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый

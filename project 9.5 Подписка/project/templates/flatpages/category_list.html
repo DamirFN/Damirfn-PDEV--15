@@ -66,8 +66,8 @@ NewsPortal
               <td>{{ new.article_description|truncatechars:20|censor }}</td>
 
               <td>
-                  {% for category in new.news_category.all %}
-                        <a href="{% url 'category_list' category.id %}">{{ new.news_category.article_title }}</a>
+                  {% for category in new.news_category.all%}
+                        <a href="{% url 'category_list' category.id %}">{{ new.news_category.all }}</a>
                   {% endfor %}
               </td>
               <td>{{ new.sort_date_of_publication|date:'h m d M Y' }}</td>

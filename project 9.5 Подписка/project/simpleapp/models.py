@@ -44,8 +44,8 @@ class NewsPortal(models.Model):
     article_author = models.CharField(max_length=50)
     article_description = models.TextField()   # Текст статьи
 
-    news_category = models.ManyToManyField('NewsCategory', related_name='news')   # все
-    # новости в категории будут доступны через поле news
+    news_category = models.ManyToManyField('NewsCategory', through='NewsPortalCategory')   # все
+    # новости в категории будут доступны через поле news , related_name='news'
 
     def __str__(self):   # отображение описания товара на страничке в интернете
         return f'{self.article_title.title()}: {self.article_description[:500]}: {self.article_author.title()}'
@@ -63,9 +63,16 @@ class NewsCategory(models.Model):
     article_title = models.CharField(max_length=100, unique=True)
     subscribers = models.ManyToManyField(User, blank=True, related_name='categories')
 
-    def __str__(self):
-        return self.article_title.title()
+    news_portal = models.ManyToManyField('NewsPortal', through='NewsPortalCategory')   # , related_name='news'
 
+    def __str__(self):
+        # return self.article_title.title()
+
+        return self.article_title
+
+class NewsPortalCategory(models.Model):
+    news_category = models.ForeignKey(NewsPortal, on_delete=models.CASCADE)
+    news_portal = models.ForeignKey(NewsCategory, on_delete=models.CASCADE)
     # Create your models here.
 
 
