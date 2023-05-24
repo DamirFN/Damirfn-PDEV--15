@@ -54,19 +54,20 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 ]
 
-
-
-SITE_URL = 'http://127.0.0.1:8000/'
+SITE_URL = 'http://127.0.0.1:8000'  # Для отправки сигналов при появлении новой статьи или новости
 
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Google-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
-EMAIL_HOST_USER = 'damirfn12345'   # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо
+EMAIL_HOST_USER = 'damirfn12345'  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо
 # писать user, иными словами, это всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = '12345damirfn'  # пароль от почты
+EMAIL_HOST_PASSWORD = '********'  # пароль от почты
 EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но
 # включать его здесь обязательно
 # здесь указываем уже свою ПОЛНУЮ почту, с которой будут отправляться письма
 DEFAULT_FROM_EMAIL = 'damirfn12345@yandex.ru'
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
 ADMINS = [
     ('damirdream', 'dreamstarsd@gmail.com'),
@@ -77,13 +78,13 @@ ADMINS = [
 SERVER_EMAIL = 'damirfn12345@yandex.ru'  # это будет у нас вместо аргумента FROM в массовой рассылке
 
 # Подключение allauth - модуль регистрации, логирования и логаут
-ACCOUNT_EMAIL_REQUIRED = True    # поле email обязательное
-ACCOUNT_UNIQUE_EMAIL = True      # уникальный email
-ACCOUNT_USERNAME_REQUIRED = False    # пользователь не уникальный
-ACCOUNT_AUTHENTICATION_METHOD = 'email'   # аутентификация будет происходить посредством электронной почты
-ACCOUNT_EMAIL_VERIFICATION = 'none'     # верификация почты отсутствует
+ACCOUNT_EMAIL_REQUIRED = True  # поле email обязательное
+ACCOUNT_UNIQUE_EMAIL = True  # уникальный email
+ACCOUNT_USERNAME_REQUIRED = False  # пользователь не уникальный
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # аутентификация будет происходить посредством электронной почты
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # верификация почты отсутствует
 
-#Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо формы по умолчанию, необходимо добавить
+# Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо формы по умолчанию, необходимо добавить
 # строчку в файл настроек проекта settings.py:
 ACCOUNT_FORMS = {'signup': 'simpleapp.forms.CommonSignupForm'}
 
@@ -174,11 +175,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-#LOGIN_URL = 'templates/flatpages' переменная LOGIN_URL, то декоратор LoginRequiredMixin перенаправит пользователя
+# LOGIN_URL = 'templates/flatpages' переменная LOGIN_URL, то декоратор LoginRequiredMixin перенаправит пользователя
 # на страницу входа. После успешного завершения входа на сайт, сайт будет перенаправлен обратно на то представление,
 # для которого был вызван декоратор.
 
-LOGIN_URL = '/accounts/login/'   # для allauth
+LOGIN_URL = '/accounts/login/'  # для allauth
 LOGIN_REDIRECT_URL = '/profile/'
 
 # Default primary key field type

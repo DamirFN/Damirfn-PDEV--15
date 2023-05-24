@@ -8,4 +8,4 @@ class SimpleappConfig(AppConfig):
     name = 'simpleapp'
 
     def ready(self):
-        import simpleapp.signals
+        from .signals import send_notifications, notify_about_new_post

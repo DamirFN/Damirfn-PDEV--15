@@ -1,9 +1,12 @@
+from allauth.account.signals import user_signed_up
+from django.contrib.auth import get_user_model
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from project.simpleapp.models import NewsPortalCategory
+from .models import NewsPortalCategory
+from django.db.models.signals import post_save
 
 def send_notifications(pk, article_title, subscribers):
     html_context = render_to_string(
@@ -34,3 +37,19 @@ def notify_about_new_post(sender, instance, **kwargs):
         subscribers = [s.email for s in subscribers]
 
         send_notifications(instance.pk, instance.article_title, subscribers)
+
+def send_welcome_email(sender, instance, created, **kwargs):
+    if created:
+        subject = 'Welcome to Newsportal! Have a wonderful day'
+        message = f"Welcome, {instance.username}!\n\nThank you for joining Newsportal. We're excited to have you as " \
+                  f"part of our community."
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [instance.email])
+
+
+User = get_user_model()
+
+
+@receiver(post_save, sender=User)
+def user_registered(sender, instance, created, **kwargs):
+    if created:
+        send_welcome_email(sender, instance, created, **kwargs)
