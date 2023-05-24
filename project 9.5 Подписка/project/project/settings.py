@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'fpages',
 
-    'simpleapp',
+    'simpleapp.apps.SimpleappConfig',
     'django_filters',
 
     'allauth',
@@ -54,16 +54,19 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 ]
 
-# здесь указываем уже свою ПОЛНУЮ почту, с которой будут отправляться письма
-DEFAULT_FROM_EMAIL = 'damirfn12345@yandex.ru'
+
+
+SITE_URL = 'http://127.0.0.1:8000/'
 
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Google-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
 EMAIL_HOST_USER = 'damirfn12345'   # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо
 # писать user, иными словами, это всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = '********'  # пароль от почты
+EMAIL_HOST_PASSWORD = '12345damirfn'  # пароль от почты
 EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но
 # включать его здесь обязательно
+# здесь указываем уже свою ПОЛНУЮ почту, с которой будут отправляться письма
+DEFAULT_FROM_EMAIL = 'damirfn12345@yandex.ru'
 
 ADMINS = [
     ('damirdream', 'dreamstarsd@gmail.com'),

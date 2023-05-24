@@ -25,7 +25,7 @@ NewsPortal
 
    <!-- Выводим количество товара в наличии с помощью метода news|length -->
    <tr>
-      <h2>Число статей: {{ news|length  }} </h2>
+      <h2>Число статей: {{ category_news_list|length  }} </h2>
    </tr>
 
    {# Добавляем форму, которая объединяет набор полей и будут отправляться в запросе #}
@@ -67,7 +67,7 @@ NewsPortal
 
               <td>
                   {% for category in new.news_category.all%}
-                        <a href="{% url 'category_list' category.id %}">{{ new.news_category.all }}</a>
+                        <a href="{% url 'category_list' category.id %}">{{ category }}</a>
                   {% endfor %}
               </td>
               <td>{{ new.sort_date_of_publication|date:'h m d M Y' }}</td>
