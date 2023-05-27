@@ -92,9 +92,9 @@ ACCOUNT_FORMS = {'signup': 'simpleapp.forms.CommonSignupForm'}
 
 SITE_ID = 1
 
-CELERY_BROKER_URL = 'redis://localhost:6379'   # указывает на URL брокера сообщений (Redis). По умолчанию он находится
+CELERY_BROKER_URL = 'redis://default:QqT6z8XsLUIRKIf8KSdaeU6fvFsLJxGO@redis-19198.c258.us-east-1-4.ec2.cloud.redislabs.com:19198'   # указывает на URL брокера сообщений (Redis). По умолчанию он находится
 # на порту 6379.
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'   # указывает на хранилище результатов выполнения задач.
+CELERY_RESULT_BACKEND = 'redis://default:QqT6z8XsLUIRKIf8KSdaeU6fvFsLJxGO@redis-19198.c258.us-east-1-4.ec2.cloud.redislabs.com:19198'   # указывает на хранилище результатов выполнения задач.
 CELERY_ACCEPT_CONTENT = ['application/json']   # допустимый формат данных.
 CELERY_TASK_SERIALIZER = 'json'    # метод сериализации задач.
 CELERY_RESULT_SERIALIZER = 'json'   # метод сериализации результатов.

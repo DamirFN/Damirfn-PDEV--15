@@ -19,6 +19,7 @@ urlpatterns = [
    # pk — это первичный ключ товара, который будет выводиться у нас в шаблон
    # int — указывает на то, что принимаются только целочисленные значения
 
+   path('', IndexView.as_view()),
 
    # Отображение всех новостей и статей, где 'new_list' это класс во views
    path('', NewsList.as_view(), name='new_list'),
@@ -60,5 +61,5 @@ urlpatterns = [
 
    path('categories/<int:pk>/unsubscribe/', unsubscribe, name='unsubscribe'),
 
-   path('', IndexView.as_view()),
+
 ]
