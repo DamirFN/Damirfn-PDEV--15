@@ -84,7 +84,7 @@ ACCOUNT_EMAIL_REQUIRED = True  # поле email обязательное
 ACCOUNT_UNIQUE_EMAIL = True  # уникальный email
 ACCOUNT_USERNAME_REQUIRED = False  # пользователь не уникальный
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # аутентификация будет происходить посредством электронной почты
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # верификация почты отсутствует
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # mandatory верификация почты отсутствует
 
 # Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо формы по умолчанию, необходимо добавить
 # строчку в файл настроек проекта settings.py:

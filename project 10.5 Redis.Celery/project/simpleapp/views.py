@@ -15,7 +15,7 @@ from .models import Appointment    # рассылка сообщений
 # from django.core.mail import send_mail
 from django.core.mail import mail_admins   # импортируем функцию для массовой отправки писем админам
 
-# from django.http import HttpResponse  # Для redis
+# from django.http import HttpResponse   # Для redis
 # from .tasks import hello, printer
 # ______________________________________________________________________________________________________________
 
@@ -136,6 +136,7 @@ class NewUpdate(PermissionRequiredMixin, UpdateView):
         elif self.request.path == '/post/article/create/':
             new.news_category_id = 2
         new.save()
+        send_email_task.delay(new.pk)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

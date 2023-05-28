@@ -1,5 +1,5 @@
 from celery import shared_task
-import datetime
+from datetime import datetime
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
