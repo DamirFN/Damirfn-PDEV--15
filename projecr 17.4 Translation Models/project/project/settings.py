@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
-import logging
+# import logging
 from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']  # - '*' Доступ ко всем хостам
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',  # обязательно впишите его перед админом
+
     'django.contrib.admin',
 
     'django.contrib.auth',
@@ -55,7 +57,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
-    'django_apscheduler'
+    'django_apscheduler',
 ]
 
 SITE_URL = 'http://127.0.0.1:8000'  # Для отправки сигналов при появлении новой статьи или новости
@@ -94,9 +96,11 @@ ACCOUNT_FORMS = {'signup': 'simpleapp.forms.CommonSignupForm'}
 
 SITE_ID = 1
 
-CELERY_BROKER_URL = 'redis://default:QqT6z8XsLUIRKIf8KSdaeU6fvFsLJxGO@redis-19198.c258.us-east-1-4.ec2.cloud.redislabs.com:19198'   # указывает на URL брокера сообщений (Redis). По умолчанию он находится
-# на порту 6379.
-CELERY_RESULT_BACKEND = 'redis://default:QqT6z8XsLUIRKIf8KSdaeU6fvFsLJxGO@redis-19198.c258.us-east-1-4.ec2.cloud.redislabs.com:19198'   # указывает на хранилище результатов выполнения задач.
+CELERY_BROKER_URL = 'redis://default:QqT6z8XsLUIRKIf8KSdaeU6fvFsLJxGO@redis-19198.c258.us-east-1-4.ec2.cloud.redislabs.com:19198'
+# Указывает на URL брокера сообщений (Redis). По умолчанию он находится на порту 6379.
+CELERY_RESULT_BACKEND = 'redis://default:QqT6z8XsLUIRKIf8KSdaeU6fvFsLJxGO@redis-19198.c258.us-east-1-4.ec2.cloud.redislabs.com:19198'
+# указывает на хранилище результатов выполнения задач.
+
 CELERY_ACCEPT_CONTENT = ['application/json']   # допустимый формат данных.
 CELERY_TASK_SERIALIZER = 'json'    # метод сериализации задач.
 CELERY_RESULT_SERIALIZER = 'json'   # метод сериализации результатов.
@@ -127,7 +131,10 @@ MIDDLEWARE = [
     # куки и сессиями.
 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
+
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',  # активация статических страничек
+
+    'django.middleware.locale.LocaleMiddleware',  # Локализация интернационализации
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -191,13 +198,24 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
+# LANGUAGE_CODE = 'ru'
+
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('ru', 'Русский')
+]
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = True   # интернационализации будут поддерживаться в нашем приложении
 
 USE_TZ = True
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]   # Для активации gettext-utils в Programm Files и активации интернационализации
 
 # Static files (css, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -218,97 +236,97 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-            "filters": ["console_only"],
-        },
-        "general_file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/general.log",
-            "maxBytes": 1048576,  # 1MB
-            "backupCount": 10,
-            "formatter": "simple",
-            "filters": ["email_file_only"],
-        },
-        "errors_file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/errors.log",
-            "maxBytes": 1048576,  # 1MB
-            "backupCount": 10,
-            "formatter": "verbose",
-            "filters": ["email_file_only"],
-        },
-        "security_file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/security.log",
-            "maxBytes": 1048576,  # 1MB
-            "backupCount": 10,
-            "formatter": "verbose",
-            "filters": ["email_file_only"],
-        },
-        "mail_admins": {
-            "class": "django.utils.log.AdminEmailHandler",
-            "include_html": True,
-            "filters": ["email_file_only"],
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "general_file"],
-            "level": "DEBUG",
-            "propagate": True,
-        },
-        "django.request": {
-            "handlers": ["errors_file", "mail_admins"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "django.server": {
-            "handlers": ["errors_file", "mail_admins"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "django.template": {
-            "handlers": ["errors_file"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "django.db.backends": {
-            "handlers": ["errors_file"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "django.security": {
-            "handlers": ["security_file"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "DEBUG",
-    },
-    "filters": {
-        "console_only": {
-            "()": "django.utils.log.CallbackFilter",
-            "callback": lambda record: settings.DEBUG,
-        },
-        "email_file_only": {
-            "()": "django.utils.log.CallbackFilter",
-            "callback": lambda record: not settings.DEBUG,
-        },
-    },
-    "formatters": {
-        "verbose": {
-            "format": "%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-        },
-        "simple": {
-            "format": "%(asctime)s %(levelname)s [%(module)s] %(message)s",
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#             "formatter": "verbose",
+#             "filters": ["console_only"],
+#         },
+#         "general_file": {
+#             "class": "logging.handlers.RotatingFileHandler",
+#             "filename": "logs/general.log",
+#             "maxBytes": 1048576,  # 1MB
+#             "backupCount": 10,
+#             "formatter": "simple",
+#             "filters": ["email_file_only"],
+#         },
+#         "errors_file": {
+#             "class": "logging.handlers.RotatingFileHandler",
+#             "filename": "logs/errors.log",
+#             "maxBytes": 1048576,  # 1MB
+#             "backupCount": 10,
+#             "formatter": "verbose",
+#             "filters": ["email_file_only"],
+#         },
+#         "security_file": {
+#             "class": "logging.handlers.RotatingFileHandler",
+#             "filename": "logs/security.log",
+#             "maxBytes": 1048576,  # 1MB
+#             "backupCount": 10,
+#             "formatter": "verbose",
+#             "filters": ["email_file_only"],
+#         },
+#         "mail_admins": {
+#             "class": "django.utils.log.AdminEmailHandler",
+#             "include_html": True,
+#             "filters": ["email_file_only"],
+#         },
+#     },
+#     "loggers": {
+#         "django": {
+#             "handlers": ["console", "general_file"],
+#             "level": "DEBUG",
+#             "propagate": True,
+#         },
+#         "django.request": {
+#             "handlers": ["errors_file", "mail_admins"],
+#             "level": "ERROR",
+#             "propagate": False,
+#         },
+#         "django.server": {
+#             "handlers": ["errors_file", "mail_admins"],
+#             "level": "ERROR",
+#             "propagate": False,
+#         },
+#         "django.template": {
+#             "handlers": ["errors_file"],
+#             "level": "ERROR",
+#             "propagate": False,
+#         },
+#         "django.db.backends": {
+#             "handlers": ["errors_file"],
+#             "level": "ERROR",
+#             "propagate": False,
+#         },
+#         "django.security": {
+#             "handlers": ["security_file"],
+#             "level": "DEBUG",
+#             "propagate": False,
+#         },
+#     },
+#     "root": {
+#         "handlers": ["console"],
+#         "level": "DEBUG",
+#     },
+#     "filters": {
+#         "console_only": {
+#             "()": "django.utils.log.CallbackFilter",
+#             "callback": lambda record: settings.DEBUG,
+#         },
+#         "email_file_only": {
+#             "()": "django.utils.log.CallbackFilter",
+#             "callback": lambda record: not settings.DEBUG,
+#         },
+#     },
+#     "formatters": {
+#         "verbose": {
+#             "format": "%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+#         },
+#         "simple": {
+#             "format": "%(asctime)s %(levelname)s [%(module)s] %(message)s",
+#         },
+#     },
+# }
