@@ -1,0 +1,14 @@
+{% extends 'flatpages/default.html' %}
+<!-- Специальный тег для перевода -->
+        {% load i18n %}
+{% block content %}
+        {{ string }} <!-- Это уже знакомая нам переменная, просто засунули её в шаблон -->
+
+    <h1 style="margin-top: 20px">{% trans "Страница профиля пользователя" %}</h1>
+    <br>
+    {% if is_not_author %}
+        <a href="{% url 'upgrade' %}" class="btn btn-primary btn-sm"> {% trans "Хочу стать автором!" %}</a>
+    {% else %}
+        <h4> {% trans "Вы уже автор" %} </h4>
+    {% endif %}
+{% endblock content %}
